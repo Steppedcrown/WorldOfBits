@@ -29,8 +29,8 @@ class Cell {
   j: number;
   bounds: leaflet.LatLngBounds;
   rectangle: leaflet.Rectangle;
-  token?: number;
-  text?: leaflet.Marker;
+  token: number | undefined;
+  text: leaflet.Marker | undefined;
 
   constructor(i: number, j: number) {
     this.i = i;
@@ -47,6 +47,18 @@ class Cell {
     ]);
 
     this.rectangle = leaflet.rectangle(this.bounds).addTo(map);
+    this.rectangle.on("click", () => {
+      if (this.token) {
+        heldToken = this.token;
+        this.token = undefined;
+        if (this.text) {
+          this.text.remove();
+          this.text = undefined;
+        }
+        updateStatus();
+        console.log(heldToken);
+      }
+    });
     if (luck([i, j, "token-exists"].toString()) < 0.5) {
       this.token = luck([i, j, "token-value"].toString()) < 0.5 ? 1 : 2;
       this.text = leaflet.marker(this.bounds.getCenter(), {
@@ -79,6 +91,22 @@ leaflet
 const playerMarker = leaflet.marker(CLASSROOM_LATLNG);
 playerMarker.bindTooltip("You");
 playerMarker.addTo(map);
+
+const statusPanel = document.createElement("div");
+statusPanel.id = "statusPanel";
+document.body.append(statusPanel);
+
+let heldToken: number | undefined;
+
+function updateStatus() {
+  if (heldToken) {
+    statusPanel.textContent = `Holding token: ${heldToken}`;
+  } else {
+    statusPanel.textContent = "Not holding a token";
+  }
+}
+
+updateStatus();
 
 for (let i = -NEIGHBORHOOD_SIZE; i < NEIGHBORHOOD_SIZE; i++) {
   for (let j = -NEIGHBORHOOD_SIZE; j < NEIGHBORHOOD_SIZE; j++) {

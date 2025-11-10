@@ -28,8 +28,10 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
 - [x] use the luck function of _luck.ts to randomly generate rectangles around the player
 - [x] use the luck function again to create 0 or 1 "tokens" of value 1 or 2 within each cell
 - [x] the value of the token of a cell should be displayed as a number within the cell
-- [ ] allow players to collect a single token from nearby cells (< 3 cells away) by clicking
-- [ ] dsplay whether or not a token is being held and the value of the token if one is held
+- [x] allow players to collect a single token from nearby cells (< 3 cells away) by clicking
+- [x] dsplay whether or not a token is being held and the value of the token if one is held
+- [ ] create a player class, tracking player position and heldToken
+- [ ] prevent player from collecting a token if one is already held
 - [ ] allow players to place the held token into a cell with a token of equal value
 - [ ] if a token is placed into a cell, create a new token with twice its value
 - [ ] detect when the player is holding a token of sufficient value
