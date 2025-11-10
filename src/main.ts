@@ -22,6 +22,43 @@ const NEIGHBORHOOD_SIZE = 8;
 const TILE_DEGREES = 1e-4;
 const SPAWN_PROBABILITY = 0.1;
 
+const cells = new Map<string, Cell>();
+
+class Cell {
+  i: number;
+  j: number;
+  bounds: leaflet.LatLngBounds;
+  rectangle: leaflet.Rectangle;
+  token?: number;
+  text?: leaflet.Marker;
+
+  constructor(i: number, j: number) {
+    this.i = i;
+    this.j = j;
+    this.bounds = leaflet.latLngBounds([
+      [
+        CLASSROOM_LATLNG.lat + i * TILE_DEGREES,
+        CLASSROOM_LATLNG.lng + j * TILE_DEGREES,
+      ],
+      [
+        CLASSROOM_LATLNG.lat + (i + 1) * TILE_DEGREES,
+        CLASSROOM_LATLNG.lng + (j + 1) * TILE_DEGREES,
+      ],
+    ]);
+
+    this.rectangle = leaflet.rectangle(this.bounds).addTo(map);
+    if (luck([i, j, "token-exists"].toString()) < 0.5) {
+      this.token = luck([i, j, "token-value"].toString()) < 0.5 ? 1 : 2;
+      this.text = leaflet.marker(this.bounds.getCenter(), {
+        icon: leaflet.divIcon({
+          className: "token-label",
+          html: `<div>${this.token}</div>`,
+        }),
+      }).addTo(map);
+    }
+  }
+}
+
 const map = leaflet.map(mapDiv, {
   center: CLASSROOM_LATLNG,
   zoom: GAMEPLAY_ZOOM_LEVEL,
@@ -43,25 +80,10 @@ const playerMarker = leaflet.marker(CLASSROOM_LATLNG);
 playerMarker.bindTooltip("You");
 playerMarker.addTo(map);
 
-function createCell(i: number, j: number) {
-  const bounds = leaflet.latLngBounds([
-    [
-      CLASSROOM_LATLNG.lat + i * TILE_DEGREES,
-      CLASSROOM_LATLNG.lng + j * TILE_DEGREES,
-    ],
-    [
-      CLASSROOM_LATLNG.lat + (i + 1) * TILE_DEGREES,
-      CLASSROOM_LATLNG.lng + (j + 1) * TILE_DEGREES,
-    ],
-  ]);
-
-  leaflet.rectangle(bounds).addTo(map);
-}
-
 for (let i = -NEIGHBORHOOD_SIZE; i < NEIGHBORHOOD_SIZE; i++) {
   for (let j = -NEIGHBORHOOD_SIZE; j < NEIGHBORHOOD_SIZE; j++) {
     if (luck([i, j].toString()) < SPAWN_PROBABILITY) {
-      createCell(i, j);
+      cells.set(`${i},${j}`, new Cell(i, j));
     }
   }
 }
