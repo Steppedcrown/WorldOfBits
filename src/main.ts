@@ -1,3 +1,4 @@
+// #region Imports
 // @deno-types="npm:@types/leaflet"
 import leaflet from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -5,27 +6,23 @@ import "./style.css";
 
 import "./_leafletWorkaround.ts";
 import luck from "./_luck.ts";
+// #endregion
 
-const mapDiv = document.createElement("div");
-mapDiv.id = "map";
-document.body.append(mapDiv);
+// #region Player class
+class Player {
+  latlng: leaflet.LatLng;
+  heldToken: number | undefined;
+  marker: leaflet.Marker;
 
-// Our classroom location
-const CLASSROOM_LATLNG = leaflet.latLng(
-  36.997936938057016,
-  -122.05703507501151,
-);
+  constructor(latlng: leaflet.LatLng) {
+    this.latlng = latlng;
+    this.marker = leaflet.marker(latlng).addTo(map);
+    this.marker.bindTooltip("You");
+  }
+}
+// #endregion
 
-// Tunable gameplay parameters
-const GAMEPLAY_ZOOM_LEVEL = 19;
-const NEIGHBORHOOD_SIZE = 8;
-const TILE_DEGREES = 1e-4;
-const SPAWN_PROBABILITY = 0.1;
-const ENDGAME_TOKEN_VALUE = 8;
-let gameWon = false;
-
-const cells = new Map<string, Cell>();
-
+// #region Cell class
 class Cell {
   i: number;
   j: number;
@@ -93,18 +90,35 @@ class Cell {
     }
   }
 }
+// #endregion
 
-class Player {
-  latlng: leaflet.LatLng;
-  heldToken: number | undefined;
-  marker: leaflet.Marker;
+// #region Gameplay parameters
+const GAMEPLAY_ZOOM_LEVEL = 19;
+const NEIGHBORHOOD_SIZE = 8;
+const TILE_DEGREES = 1e-4;
+const SPAWN_PROBABILITY = 0.1;
+const ENDGAME_TOKEN_VALUE = 8;
+let gameWon = false;
 
-  constructor(latlng: leaflet.LatLng) {
-    this.latlng = latlng;
-    this.marker = leaflet.marker(latlng).addTo(map);
-    this.marker.bindTooltip("You");
-  }
-}
+const cells = new Map<string, Cell>();
+// #endregion
+
+// #region Create divs
+const mapDiv = document.createElement("div");
+mapDiv.id = "map";
+document.body.append(mapDiv);
+
+const statusPanel = document.createElement("div");
+statusPanel.id = "statusPanel";
+document.body.append(statusPanel);
+// #endregion
+
+// #region Leaflet map setup
+// Default location
+const CLASSROOM_LATLNG = leaflet.latLng(
+  36.997936938057016,
+  -122.05703507501151,
+);
 
 const map = leaflet.map(mapDiv, {
   center: CLASSROOM_LATLNG,
@@ -122,13 +136,11 @@ leaflet
       '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   })
   .addTo(map);
+// #endregion
 
 const player = new Player(CLASSROOM_LATLNG);
 
-const statusPanel = document.createElement("div");
-statusPanel.id = "statusPanel";
-document.body.append(statusPanel);
-
+// Handle token status updates
 function updateStatus() {
   if (player.heldToken) {
     statusPanel.textContent = `Holding token: ${player.heldToken}`;
@@ -152,13 +164,16 @@ function updateStatus() {
     statusPanel.textContent = "Not holding a token";
   }
 }
-
 updateStatus();
 
-for (let i = -NEIGHBORHOOD_SIZE; i < NEIGHBORHOOD_SIZE; i++) {
-  for (let j = -NEIGHBORHOOD_SIZE; j < NEIGHBORHOOD_SIZE; j++) {
-    if (luck([i, j].toString()) < SPAWN_PROBABILITY) {
-      cells.set(`${i},${j}`, new Cell(i, j));
+// Initialize cells
+function spawnCells() {
+  for (let i = -NEIGHBORHOOD_SIZE; i < NEIGHBORHOOD_SIZE; i++) {
+    for (let j = -NEIGHBORHOOD_SIZE; j < NEIGHBORHOOD_SIZE; j++) {
+      if (luck([i, j].toString()) < SPAWN_PROBABILITY) {
+        cells.set(`${i},${j}`, new Cell(i, j));
+      }
     }
   }
 }
+spawnCells();
