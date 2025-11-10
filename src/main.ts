@@ -4,6 +4,7 @@ import "leaflet/dist/leaflet.css";
 import "./style.css";
 
 import "./_leafletWorkaround.ts";
+import luck from "./_luck.ts";
 
 const mapDiv = document.createElement("div");
 mapDiv.id = "map";
@@ -19,6 +20,7 @@ const CLASSROOM_LATLNG = leaflet.latLng(
 const GAMEPLAY_ZOOM_LEVEL = 19;
 const NEIGHBORHOOD_SIZE = 8;
 const TILE_DEGREES = 1e-4;
+const SPAWN_PROBABILITY = 0.1;
 
 const map = leaflet.map(mapDiv, {
   center: CLASSROOM_LATLNG,
@@ -41,19 +43,25 @@ const playerMarker = leaflet.marker(CLASSROOM_LATLNG);
 playerMarker.bindTooltip("You");
 playerMarker.addTo(map);
 
+function createCell(i: number, j: number) {
+  const bounds = leaflet.latLngBounds([
+    [
+      CLASSROOM_LATLNG.lat + i * TILE_DEGREES,
+      CLASSROOM_LATLNG.lng + j * TILE_DEGREES,
+    ],
+    [
+      CLASSROOM_LATLNG.lat + (i + 1) * TILE_DEGREES,
+      CLASSROOM_LATLNG.lng + (j + 1) * TILE_DEGREES,
+    ],
+  ]);
+
+  leaflet.rectangle(bounds).addTo(map);
+}
+
 for (let i = -NEIGHBORHOOD_SIZE; i < NEIGHBORHOOD_SIZE; i++) {
   for (let j = -NEIGHBORHOOD_SIZE; j < NEIGHBORHOOD_SIZE; j++) {
-    const bounds = leaflet.latLngBounds([
-      [
-        CLASSROOM_LATLNG.lat + i * TILE_DEGREES,
-        CLASSROOM_LATLNG.lng + j * TILE_DEGREES,
-      ],
-      [
-        CLASSROOM_LATLNG.lat + (i + 1) * TILE_DEGREES,
-        CLASSROOM_LATLNG.lng + (j + 1) * TILE_DEGREES,
-      ],
-    ]);
-
-    leaflet.rectangle(bounds).addTo(map);
+    if (luck([i, j].toString()) < SPAWN_PROBABILITY) {
+      createCell(i, j);
+    }
   }
 }
