@@ -21,6 +21,8 @@ const GAMEPLAY_ZOOM_LEVEL = 19;
 const NEIGHBORHOOD_SIZE = 8;
 const TILE_DEGREES = 1e-4;
 const SPAWN_PROBABILITY = 0.1;
+const ENDGAME_TOKEN_VALUE = 8;
+let gameWon = false;
 
 const cells = new Map<string, Cell>();
 
@@ -130,6 +132,22 @@ document.body.append(statusPanel);
 function updateStatus() {
   if (player.heldToken) {
     statusPanel.textContent = `Holding token: ${player.heldToken}`;
+    if (player.heldToken === ENDGAME_TOKEN_VALUE && !gameWon) {
+      gameWon = true;
+      statusPanel.textContent += " - You Win!";
+      const restartButton = document.createElement("button");
+      restartButton.textContent = "Restart";
+      restartButton.onclick = () => location.reload();
+      statusPanel.append(restartButton);
+      const continueButton = document.createElement("button");
+      continueButton.textContent = "Continue";
+      continueButton.onclick = () => {
+        gameWon = false;
+        restartButton.remove();
+        continueButton.remove();
+      };
+      statusPanel.append(continueButton);
+    }
   } else {
     statusPanel.textContent = "Not holding a token";
   }

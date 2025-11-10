@@ -34,7 +34,8 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
 - [x] prevent player from collecting a token if one is already held
 - [x] allow player to place held token in empty cell
 - [x] allow player to place token in cell with token of same value to merge into new token
-- [ ] add a endgameTokenValue variable of 64
-- [ ] detect when the player is holding a token of that value and display a you win message
-- [ ] give the option to restart the game or continue playing
-- [ ] if the game continues, add a button to reset and quit detecting for the endgame value
+- [x] add a endgameTokenValue variable of 64
+- [x] detect when the player is holding a token of that value and display a you win message
+- [x] give the option to restart the game or continue playing
+- [x] if the game continues, add a button to reset and quit detecting for the endgame value
+- [ ] if the player continued, add a permanent reset button in the left corner of the screen
