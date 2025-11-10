@@ -48,18 +48,40 @@ class Cell {
 
     this.rectangle = leaflet.rectangle(this.bounds).addTo(map);
     this.rectangle.on("click", () => {
-      if (this.token && !player.heldToken) {
-        player.heldToken = this.token;
-        this.token = undefined;
-        if (this.text) {
-          this.text.remove();
-          this.text = undefined;
+      if (player.heldToken) {
+        if (!this.token) {
+          this.setToken(player.heldToken);
+          player.heldToken = undefined;
+          updateStatus();
+        } else if (this.token === player.heldToken) {
+          this.setToken(this.token * 2);
+          player.heldToken = undefined;
+          updateStatus();
         }
+      } else if (this.token) {
+        player.heldToken = this.token;
+        this.setToken(undefined);
         updateStatus();
       }
     });
     if (luck([i, j, "token-exists"].toString()) < 0.5) {
       this.token = luck([i, j, "token-value"].toString()) < 0.5 ? 1 : 2;
+      this.text = leaflet.marker(this.bounds.getCenter(), {
+        icon: leaflet.divIcon({
+          className: "token-label",
+          html: `<div>${this.token}</div>`,
+        }),
+      }).addTo(map);
+    }
+  }
+
+  setToken(value: number | undefined) {
+    this.token = value;
+    if (this.text) {
+      this.text.remove();
+      this.text = undefined;
+    }
+    if (this.token) {
       this.text = leaflet.marker(this.bounds.getCenter(), {
         icon: leaflet.divIcon({
           className: "token-label",
