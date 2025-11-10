@@ -1,0 +1,32 @@
+# D3: World of Bits
+
+Game Design Vision
+Make a game that combines features of 2048 and Pokemon Go, creating a map of the real world which players can navigate, finding tiles in various locations. Tiles can have tokens with values on them which players can collect, holding one token at a time, and place on tiles with tokens of the same value of the one being held to create a new token on that tile with twice its original value. The goal of the game is get a tile with a value of 64.
+
+Technologies
+
+- TypeScript for most game code, little to no explicit HTML, and all CSS collected in common `style.css` file
+- Deno and Vite for building
+- GitHub Actions + GitHub Pages for deployment automation
+
+Assignments
+
+## D3.a: Core mechanics (token collection and crafting)
+
+Key technical challenge: Assemble a map-based user interface using the Leaflet mapping framework
+Key gameplay challenge: Can players collect and craft tokens from nearby locations to finally make one of sufficiently high value?
+
+### Steps
+
+- [ ] copy main.ts to reference.ts for future reference
+- [ ] delete everything in main.ts
+- [ ] create a basic leaflet map which covers the whole screen
+- [ ] draw the player's location on the map
+- [ ] draw a rectangle representing one cell on the map
+- [ ] use loops to draw a whole grid of cells on the map
+- [ ] create "tokens" within the cells
+- [ ] allow players to collect and hold a single token from nearby cells (< 3 cells away)
+- [ ] dsplay whether or not a token is being held and the value of the token if one is held
+- [ ] allow players to place the held token into a cell with a token of equal value
+- [ ] if a token is placed into a cell, create a new token with twice its value
+- [ ] detect when the player is holding a token of sufficient value
