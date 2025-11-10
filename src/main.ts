@@ -8,6 +8,18 @@ import "./_leafletWorkaround.ts";
 import luck from "./_luck.ts";
 // #endregion
 
+// #region Gameplay parameters
+const GAMEPLAY_ZOOM_LEVEL = 19;
+const NEIGHBORHOOD_SIZE = 8;
+const TILE_DEGREES = 1e-4;
+const SPAWN_PROBABILITY = 0.1;
+const INTERACTION_RANGE = 5;
+const ENDGAME_TOKEN_VALUE = 8;
+let gameWon = false;
+
+const cells = new Map<string, Cell>();
+// #endregion
+
 // #region Player class
 class Player {
   latlng: leaflet.LatLng;
@@ -57,6 +69,10 @@ class Cell {
 
     // Handle token collection, placement, and merging
     this.rectangle.on("click", () => {
+      const distance = Math.sqrt(this.i ** 2 + this.j ** 2);
+      if (distance > INTERACTION_RANGE) {
+        return;
+      }
       if (player.getHeldToken()) {
         if (!this.token) this.setToken(player.getHeldToken());
         else if (this.token === player.getHeldToken()) {
@@ -100,17 +116,6 @@ class Cell {
     }).addTo(map);
   }
 }
-// #endregion
-
-// #region Gameplay parameters
-const GAMEPLAY_ZOOM_LEVEL = 19;
-const NEIGHBORHOOD_SIZE = 8;
-const TILE_DEGREES = 1e-4;
-const SPAWN_PROBABILITY = 0.1;
-const ENDGAME_TOKEN_VALUE = 8;
-let gameWon = false;
-
-const cells = new Map<string, Cell>();
 // #endregion
 
 // #region Create divs

@@ -37,3 +37,5 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
 - [x] add a endgameTokenValue variable of 64
 - [x] detect when the player is holding a token of that value and display a you win message
 - [x] give the option to restart the game or continue playing
+- [x] create a new game parameter for interactionRange, measured in tiles
+- [x] players can only interact with tiles within the interactionRange of the player
