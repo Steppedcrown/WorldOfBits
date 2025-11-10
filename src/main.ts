@@ -146,17 +146,19 @@ function updateStatus() {
     statusPanel.textContent = `Holding token: ${player.heldToken}`;
     if (player.heldToken === ENDGAME_TOKEN_VALUE && !gameWon) {
       gameWon = true;
-      statusPanel.textContent += " - You Win!";
+      statusPanel.textContent += " - You Win! ";
+
       const restartButton = document.createElement("button");
       restartButton.textContent = "Restart";
       restartButton.onclick = () => location.reload();
       statusPanel.append(restartButton);
+
       const continueButton = document.createElement("button");
       continueButton.textContent = "Continue";
       continueButton.onclick = () => {
-        gameWon = false;
         restartButton.remove();
         continueButton.remove();
+        statusPanel.textContent = `Holding token: ${player.heldToken}`;
       };
       statusPanel.append(continueButton);
     }
