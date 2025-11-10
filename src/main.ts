@@ -36,5 +36,5 @@ leaflet
   .addTo(map);
 
 const playerMarker = leaflet.marker(CLASSROOM_LATLNG);
-playerMarker.bindTooltip("That's you!");
+playerMarker.bindTooltip("You");
 playerMarker.addTo(map);
