@@ -48,15 +48,14 @@ class Cell {
 
     this.rectangle = leaflet.rectangle(this.bounds).addTo(map);
     this.rectangle.on("click", () => {
-      if (this.token) {
-        heldToken = this.token;
+      if (this.token && !player.heldToken) {
+        player.heldToken = this.token;
         this.token = undefined;
         if (this.text) {
           this.text.remove();
           this.text = undefined;
         }
         updateStatus();
-        console.log(heldToken);
       }
     });
     if (luck([i, j, "token-exists"].toString()) < 0.5) {
@@ -68,6 +67,18 @@ class Cell {
         }),
       }).addTo(map);
     }
+  }
+}
+
+class Player {
+  latlng: leaflet.LatLng;
+  heldToken: number | undefined;
+  marker: leaflet.Marker;
+
+  constructor(latlng: leaflet.LatLng) {
+    this.latlng = latlng;
+    this.marker = leaflet.marker(latlng).addTo(map);
+    this.marker.bindTooltip("You");
   }
 }
 
@@ -88,19 +99,15 @@ leaflet
   })
   .addTo(map);
 
-const playerMarker = leaflet.marker(CLASSROOM_LATLNG);
-playerMarker.bindTooltip("You");
-playerMarker.addTo(map);
+const player = new Player(CLASSROOM_LATLNG);
 
 const statusPanel = document.createElement("div");
 statusPanel.id = "statusPanel";
 document.body.append(statusPanel);
 
-let heldToken: number | undefined;
-
 function updateStatus() {
-  if (heldToken) {
-    statusPanel.textContent = `Holding token: ${heldToken}`;
+  if (player.heldToken) {
+    statusPanel.textContent = `Holding token: ${player.heldToken}`;
   } else {
     statusPanel.textContent = "Not holding a token";
   }
