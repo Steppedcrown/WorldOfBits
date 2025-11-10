@@ -10,7 +10,7 @@ import luck from "./_luck.ts";
 
 // #region Gameplay parameters
 const GAMEPLAY_ZOOM_LEVEL = 19;
-const NEIGHBORHOOD_SIZE = 8;
+const NEIGHBORHOOD_SIZE = 20;
 const TILE_DEGREES = 1e-4;
 const SPAWN_PROBABILITY = 0.1;
 const INTERACTION_RANGE = 5;
