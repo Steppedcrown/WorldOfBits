@@ -11,13 +11,21 @@ import luck from "./_luck.ts";
 // #region Player class
 class Player {
   latlng: leaflet.LatLng;
-  heldToken: number | undefined;
+  private heldToken: number | undefined;
   marker: leaflet.Marker;
 
   constructor(latlng: leaflet.LatLng) {
     this.latlng = latlng;
     this.marker = leaflet.marker(latlng).addTo(map);
     this.marker.bindTooltip("You");
+  }
+
+  getHeldToken(): number | undefined {
+    return this.heldToken;
+  }
+
+  setHeldToken(value: number | undefined) {
+    this.heldToken = value;
   }
 }
 // #endregion
@@ -49,13 +57,15 @@ class Cell {
 
     // Handle token collection, placement, and merging
     this.rectangle.on("click", () => {
-      if (player.heldToken) {
-        if (!this.token) this.setToken(player.heldToken);
-        else if (this.token === player.heldToken) this.setToken(this.token * 2);
-        player.heldToken = undefined;
+      if (player.getHeldToken()) {
+        if (!this.token) this.setToken(player.getHeldToken());
+        else if (this.token === player.getHeldToken()) {
+          this.setToken(this.token * 2);
+        }
+        player.setHeldToken(undefined);
         updateStatus();
       } else if (this.token) {
-        player.heldToken = this.token;
+        player.setHeldToken(this.token);
         this.setToken(undefined);
         updateStatus();
       }
@@ -142,9 +152,10 @@ const player = new Player(CLASSROOM_LATLNG);
 
 // Handle token status updates
 function updateStatus() {
-  if (player.heldToken) {
-    statusPanel.textContent = `Holding token: ${player.heldToken}`;
-    if (player.heldToken === ENDGAME_TOKEN_VALUE && !gameWon) {
+  const heldToken = player.getHeldToken();
+  if (heldToken) {
+    statusPanel.textContent = `Holding token: ${heldToken}`;
+    if (heldToken === ENDGAME_TOKEN_VALUE && !gameWon) {
       gameWon = true;
       statusPanel.textContent += " - You Win! ";
 
@@ -158,7 +169,7 @@ function updateStatus() {
       continueButton.onclick = () => {
         restartButton.remove();
         continueButton.remove();
-        statusPanel.textContent = `Holding token: ${player.heldToken}`;
+        statusPanel.textContent = `Holding token: ${heldToken}`;
       };
       statusPanel.append(continueButton);
     }
