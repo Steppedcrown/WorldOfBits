@@ -43,6 +43,16 @@ class Player {
   setHeldToken(value: number | undefined) {
     this.heldToken = value;
   }
+
+  move(di: number, dj: number) {
+    this.tileI += di;
+    this.tileJ += dj;
+    this.latlng = new leaflet.LatLng(
+      this.latlng.lat + di * TILE_DEGREES,
+      this.latlng.lng + dj * TILE_DEGREES,
+    );
+    this.marker.setLatLng(this.latlng);
+  }
 }
 // #endregion
 
@@ -233,4 +243,27 @@ spawnCells(map.getCenter());
 
 map.on("moveend", () => {
   spawnCells(map.getCenter());
+});
+
+// Player movement
+function updatePlayer(di: number, dj: number) {
+  player.move(di, dj);
+  map.setView(player.latlng, map.getZoom());
+}
+
+document.addEventListener("keydown", (e) => {
+  switch (e.key) {
+    case "w":
+      updatePlayer(1, 0);
+      break;
+    case "s":
+      updatePlayer(-1, 0);
+      break;
+    case "a":
+      updatePlayer(0, -1);
+      break;
+    case "d":
+      updatePlayer(0, 1);
+      break;
+  }
 });
