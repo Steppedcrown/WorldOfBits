@@ -60,12 +60,12 @@ class Cell {
     this.j = j;
     this.bounds = leaflet.latLngBounds([
       [
-        CLASSROOM_LATLNG.lat + i * TILE_DEGREES,
-        CLASSROOM_LATLNG.lng + j * TILE_DEGREES,
+        NULL_ISLAND.lat + i * TILE_DEGREES,
+        NULL_ISLAND.lng + j * TILE_DEGREES,
       ],
       [
-        CLASSROOM_LATLNG.lat + (i + 1) * TILE_DEGREES,
-        CLASSROOM_LATLNG.lng + (j + 1) * TILE_DEGREES,
+        NULL_ISLAND.lat + (i + 1) * TILE_DEGREES,
+        NULL_ISLAND.lng + (j + 1) * TILE_DEGREES,
       ],
     ]);
 
@@ -141,6 +141,8 @@ const CLASSROOM_LATLNG = leaflet.latLng(
   -122.05703507501151,
 );
 
+const NULL_ISLAND = leaflet.latLng(0, 0);
+
 const map = leaflet.map(mapDiv, {
   center: CLASSROOM_LATLNG,
   zoom: GAMEPLAY_ZOOM_LEVEL,
@@ -190,6 +192,7 @@ function updateStatus() {
 }
 updateStatus();
 
+// Cell functions
 function clearCells() {
   cells.forEach((cell) => {
     cell.rectangle.remove();
@@ -200,15 +203,14 @@ function clearCells() {
   cells.clear();
 }
 
-// Initialize cells
 function spawnCells(center: leaflet.LatLng) {
   clearCells();
 
   const centerI = Math.round(
-    (center.lat - CLASSROOM_LATLNG.lat) / TILE_DEGREES,
+    (center.lat - NULL_ISLAND.lat) / TILE_DEGREES,
   );
   const centerJ = Math.round(
-    (center.lng - CLASSROOM_LATLNG.lng) / TILE_DEGREES,
+    (center.lng - NULL_ISLAND.lng) / TILE_DEGREES,
   );
 
   for (
