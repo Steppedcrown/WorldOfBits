@@ -53,6 +53,7 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
 - [x] despawn all other cells when new cells are spawned and do not remember their state
 - [x] ensure the token values of cells are despawned as well
 - [x] allow for player movement with wasd to move one cell's worth in each direction
-- [ ] display this control scheme in game
+- [x] create a new div to hold the statusPanel and controlPanel
+- [x] create a new controlPanel to display the control scheme
 - [ ] allow for player to zoom on map with scroll wheel
 - [ ] decrease neighborhood size, decrease interaction range, increase endgame token value

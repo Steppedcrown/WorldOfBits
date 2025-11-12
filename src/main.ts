@@ -139,9 +139,18 @@ const mapDiv = document.createElement("div");
 mapDiv.id = "map";
 document.body.append(mapDiv);
 
+const infoPanel = document.createElement("div");
+infoPanel.id = "infoPanel";
+document.body.append(infoPanel);
+
 const statusPanel = document.createElement("div");
 statusPanel.id = "statusPanel";
-document.body.append(statusPanel);
+infoPanel.append(statusPanel);
+
+const controlPanel = document.createElement("div");
+controlPanel.id = "controlPanel";
+controlPanel.innerHTML = "Controls: <br> w,a,s,d to move";
+infoPanel.append(controlPanel);
 // #endregion
 
 // #region Leaflet map setup
