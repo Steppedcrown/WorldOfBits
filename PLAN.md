@@ -55,5 +55,5 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
 - [x] allow for player movement with wasd to move one cell's worth in each direction
 - [x] create a new div to hold the statusPanel and controlPanel
 - [x] create a new controlPanel to display the control scheme
-- [ ] allow for player to zoom on map with scroll wheel
+- [x] allow for player to zoom on map with scroll wheel
 - [ ] decrease neighborhood size, decrease interaction range, increase endgame token value

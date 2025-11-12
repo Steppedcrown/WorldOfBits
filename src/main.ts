@@ -162,13 +162,15 @@ const CLASSROOM_LATLNG = leaflet.latLng(
 
 const NULL_ISLAND = leaflet.latLng(0, 0);
 
+// Map parameters
+const MIN_ZOOM_LEVEL = 17;
+
 const map = leaflet.map(mapDiv, {
   center: CLASSROOM_LATLNG,
   zoom: GAMEPLAY_ZOOM_LEVEL,
-  minZoom: GAMEPLAY_ZOOM_LEVEL,
-  maxZoom: GAMEPLAY_ZOOM_LEVEL,
+  minZoom: MIN_ZOOM_LEVEL,
   zoomControl: false,
-  scrollWheelZoom: false,
+  scrollWheelZoom: true,
 });
 
 leaflet
