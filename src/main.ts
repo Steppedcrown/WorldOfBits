@@ -269,15 +269,12 @@ function spawnCells() {
 spawnCells();
 
 map.on("moveend", () => {
-  const bounds = map.getBounds();
-  for (const [key, cell] of cells.entries()) {
-    if (!bounds.intersects(cell.bounds)) {
-      cell.rectangle.remove();
-      if (cell.text) {
-        cell.text.remove();
-      }
-      cells.delete(key);
+  for (const [_key, cell] of cells.entries()) {
+    cell.rectangle.remove();
+    if (cell.text) {
+      cell.text.remove();
     }
   }
+  cells.clear();
   spawnCells();
 });

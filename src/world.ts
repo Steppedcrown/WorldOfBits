@@ -9,11 +9,7 @@ export class WorldState {
 
   setCellToken(p: Point, tokenValue: number) {
     const key = this.pointToKey(p);
-    if (tokenValue > 0) {
-      this.cellStates.set(key, tokenValue);
-    } else {
-      this.cellStates.delete(key);
-    }
+    this.cellStates.set(key, tokenValue);
   }
 
   getCellToken(p: Point): number | undefined {
