@@ -55,17 +55,17 @@ class Cell {
   token: number | undefined;
   text: leaflet.Marker | undefined;
 
-  constructor(i: number, j: number, center: leaflet.LatLng) {
+  constructor(i: number, j: number) {
     this.i = i;
     this.j = j;
     this.bounds = leaflet.latLngBounds([
       [
-        center.lat + i * TILE_DEGREES,
-        center.lng + j * TILE_DEGREES,
+        CLASSROOM_LATLNG.lat + i * TILE_DEGREES,
+        CLASSROOM_LATLNG.lng + j * TILE_DEGREES,
       ],
       [
-        center.lat + (i + 1) * TILE_DEGREES,
-        center.lng + (j + 1) * TILE_DEGREES,
+        CLASSROOM_LATLNG.lat + (i + 1) * TILE_DEGREES,
+        CLASSROOM_LATLNG.lng + (j + 1) * TILE_DEGREES,
       ],
     ]);
 
@@ -93,16 +93,9 @@ class Cell {
       }
     });
 
-    const tileI = Math.round(
-      (this.bounds.getCenter().lat - CLASSROOM_LATLNG.lat) / TILE_DEGREES,
-    );
-    const tileJ = Math.round(
-      (this.bounds.getCenter().lng - CLASSROOM_LATLNG.lng) / TILE_DEGREES,
-    );
-
     // Create random token assignment and value
-    if (luck([tileI, tileJ, "token-exists"].toString()) < 0.5) {
-      this.token = luck([tileI, tileJ, "token-value"].toString()) < 0.5 ? 1 : 2;
+    if (luck([i, j, "token-exists"].toString()) < 0.5) {
+      this.token = luck([i, j, "token-value"].toString()) < 0.5 ? 1 : 2;
       this.setText();
     }
   }
@@ -229,7 +222,7 @@ function spawnCells(center: leaflet.LatLng) {
       j++
     ) {
       if (luck([i, j].toString()) < SPAWN_PROBABILITY) {
-        cells.set(`${i},${j}`, new Cell(i, j, center));
+        cells.set(`${i},${j}`, new Cell(i, j));
       }
     }
   }
