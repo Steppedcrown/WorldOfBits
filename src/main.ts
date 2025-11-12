@@ -30,8 +30,8 @@ class Player {
 
   constructor(latlng: leaflet.LatLng) {
     this.latlng = latlng;
-    this.tileI = 0;
-    this.tileJ = 0;
+    this.tileI = Math.round((latlng.lat - NULL_ISLAND.lat) / TILE_DEGREES);
+    this.tileJ = Math.round((latlng.lng - NULL_ISLAND.lng) / TILE_DEGREES);
     this.marker = leaflet.marker(latlng).addTo(map);
     this.marker.bindTooltip("You");
   }
@@ -260,6 +260,7 @@ function updatePlayer(di: number, dj: number) {
   map.setView(player.latlng, map.getZoom());
 }
 
+// Handle keyboard input for movement
 document.addEventListener("keydown", (e) => {
   switch (e.key) {
     case "w":
