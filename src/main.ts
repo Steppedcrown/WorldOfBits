@@ -1,11 +1,12 @@
 // #region Imports
 // @deno-types="npm:@types/leaflet"
-import leaflet from "leaflet";
+import leaflet, { Point } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./style.css";
 
 import "./_leafletWorkaround.ts";
 import luck from "./_luck.ts";
+import { WorldState } from "./world.ts";
 // #endregion
 
 // #region Create divs
@@ -35,6 +36,7 @@ const INTERACTION_RANGE = 5;
 const ENDGAME_TOKEN_VALUE = 32;
 let gameWon = false;
 
+const worldState = new WorldState();
 const cells = new Map<string, Cell>();
 // #endregion
 
@@ -137,7 +139,7 @@ class Cell {
   token: number | undefined;
   text: leaflet.Marker | undefined;
 
-  constructor(i: number, j: number) {
+  constructor(i: number, j: number, token: number | undefined) {
     this.i = i;
     this.j = j;
     this.bounds = leaflet.latLngBounds([
@@ -152,6 +154,7 @@ class Cell {
     ]);
 
     this.rectangle = leaflet.rectangle(this.bounds).addTo(map);
+    this.setToken(token);
 
     // Handle token collection, placement, and merging
     this.rectangle.on("click", () => {
@@ -161,25 +164,24 @@ class Cell {
       if (distance > INTERACTION_RANGE) {
         return;
       }
+      const currentCellPoint = new Point(this.i, this.j);
       if (player.getHeldToken()) {
-        if (!this.token) this.setToken(player.getHeldToken());
-        else if (this.token === player.getHeldToken()) {
+        if (!this.token) {
+          this.setToken(player.getHeldToken());
+          worldState.setCellToken(currentCellPoint, this.token!);
+        } else if (this.token === player.getHeldToken()) {
           this.setToken(this.token * 2);
+          worldState.setCellToken(currentCellPoint, this.token!);
         }
         player.setHeldToken(undefined);
         updateStatus();
       } else if (this.token) {
         player.setHeldToken(this.token);
         this.setToken(undefined);
+        worldState.setCellToken(currentCellPoint, 0);
         updateStatus();
       }
     });
-
-    // Create random token assignment and value
-    if (luck([i, j, "token-exists"].toString()) < 0.5) {
-      this.token = luck([i, j, "token-value"].toString()) < 0.5 ? 1 : 2;
-      this.setText();
-    }
   }
 
   setToken(value: number | undefined) {
@@ -252,7 +254,14 @@ function spawnCells() {
     for (let j = minJ; j <= maxJ; j++) {
       const key = `${i},${j}`;
       if (!cells.has(key) && luck([i, j].toString()) < SPAWN_PROBABILITY) {
-        cells.set(key, new Cell(i, j));
+        const cellPoint = new Point(i, j);
+        let token = worldState.getCellToken(cellPoint);
+        if (token === undefined) {
+          if (luck([i, j, "token-exists"].toString()) < 0.5) {
+            token = luck([i, j, "token-value"].toString()) < 0.5 ? 1 : 2;
+          }
+        }
+        cells.set(key, new Cell(i, j, token));
       }
     }
   }
