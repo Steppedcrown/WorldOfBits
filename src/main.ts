@@ -10,11 +10,10 @@ import luck from "./_luck.ts";
 
 // #region Gameplay parameters
 const GAMEPLAY_ZOOM_LEVEL = 19;
-const NEIGHBORHOOD_SIZE = 20;
 const TILE_DEGREES = 1e-4;
 const SPAWN_PROBABILITY = 0.1;
-const INTERACTION_RANGE = 5;
-const ENDGAME_TOKEN_VALUE = 8;
+const INTERACTION_RANGE = 3;
+const ENDGAME_TOKEN_VALUE = 64;
 let gameWon = false;
 
 const cells = new Map<string, Cell>();
@@ -224,36 +223,30 @@ function clearCells() {
   cells.clear();
 }
 
-function spawnCells(center: leaflet.LatLng) {
+function spawnCells() {
   clearCells();
 
-  const centerI = Math.round(
-    (center.lat - NULL_ISLAND.lat) / TILE_DEGREES,
-  );
-  const centerJ = Math.round(
-    (center.lng - NULL_ISLAND.lng) / TILE_DEGREES,
-  );
+  const bounds = map.getBounds();
+  const northEast = bounds.getNorthEast();
+  const southWest = bounds.getSouthWest();
 
-  for (
-    let i = centerI - NEIGHBORHOOD_SIZE;
-    i < centerI + NEIGHBORHOOD_SIZE;
-    i++
-  ) {
-    for (
-      let j = centerJ - NEIGHBORHOOD_SIZE;
-      j < centerJ + NEIGHBORHOOD_SIZE;
-      j++
-    ) {
+  const minI = Math.round((southWest.lat - NULL_ISLAND.lat) / TILE_DEGREES);
+  const maxI = Math.round((northEast.lat - NULL_ISLAND.lat) / TILE_DEGREES);
+  const minJ = Math.round((southWest.lng - NULL_ISLAND.lng) / TILE_DEGREES);
+  const maxJ = Math.round((northEast.lng - NULL_ISLAND.lng) / TILE_DEGREES);
+
+  for (let i = minI; i <= maxI; i++) {
+    for (let j = minJ; j <= maxJ; j++) {
       if (luck([i, j].toString()) < SPAWN_PROBABILITY) {
         cells.set(`${i},${j}`, new Cell(i, j));
       }
     }
   }
 }
-spawnCells(map.getCenter());
+spawnCells();
 
 map.on("moveend", () => {
-  spawnCells(map.getCenter());
+  spawnCells();
 });
 
 // Player movement
