@@ -47,9 +47,11 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
 
 ### Steps b
 
-- [ ] modify the spawn cells function to start at any coordinate value
-- [ ] listen for the moveend event and respawn cells around the new center point
+- [x] modify the spawn cells function to start at any coordinate value
+- [x] it should spawn the pseudorandom cells from that position, not the same cells
+- [x] listen for the moveend event and respawn cells around the new center point
 - [ ] despawn all other cells when new cells are spawned and do not remember their state
 - [ ] allow for player movement with wasd to move one cell's worth in each direction
 - [ ] display this control scheme in game
+- [ ] allow for player to zoom on map with scroll wheel
 - [ ] decrease neighborhood size, decrease interaction range, increase endgame token value

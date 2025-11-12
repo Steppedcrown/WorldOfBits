@@ -23,11 +23,15 @@ const cells = new Map<string, Cell>();
 // #region Player class
 class Player {
   latlng: leaflet.LatLng;
+  tileI: number;
+  tileJ: number;
   private heldToken: number | undefined;
   marker: leaflet.Marker;
 
   constructor(latlng: leaflet.LatLng) {
     this.latlng = latlng;
+    this.tileI = 0;
+    this.tileJ = 0;
     this.marker = leaflet.marker(latlng).addTo(map);
     this.marker.bindTooltip("You");
   }
@@ -51,17 +55,17 @@ class Cell {
   token: number | undefined;
   text: leaflet.Marker | undefined;
 
-  constructor(i: number, j: number) {
+  constructor(i: number, j: number, center: leaflet.LatLng) {
     this.i = i;
     this.j = j;
     this.bounds = leaflet.latLngBounds([
       [
-        CLASSROOM_LATLNG.lat + i * TILE_DEGREES,
-        CLASSROOM_LATLNG.lng + j * TILE_DEGREES,
+        center.lat + i * TILE_DEGREES,
+        center.lng + j * TILE_DEGREES,
       ],
       [
-        CLASSROOM_LATLNG.lat + (i + 1) * TILE_DEGREES,
-        CLASSROOM_LATLNG.lng + (j + 1) * TILE_DEGREES,
+        center.lat + (i + 1) * TILE_DEGREES,
+        center.lng + (j + 1) * TILE_DEGREES,
       ],
     ]);
 
@@ -69,7 +73,9 @@ class Cell {
 
     // Handle token collection, placement, and merging
     this.rectangle.on("click", () => {
-      const distance = Math.sqrt(this.i ** 2 + this.j ** 2);
+      const distance = Math.sqrt(
+        (this.i - player.tileI) ** 2 + (this.j - player.tileJ) ** 2,
+      );
       if (distance > INTERACTION_RANGE) {
         return;
       }
@@ -87,9 +93,16 @@ class Cell {
       }
     });
 
+    const tileI = Math.round(
+      (this.bounds.getCenter().lat - CLASSROOM_LATLNG.lat) / TILE_DEGREES,
+    );
+    const tileJ = Math.round(
+      (this.bounds.getCenter().lng - CLASSROOM_LATLNG.lng) / TILE_DEGREES,
+    );
+
     // Create random token assignment and value
-    if (luck([i, j, "token-exists"].toString()) < 0.5) {
-      this.token = luck([i, j, "token-value"].toString()) < 0.5 ? 1 : 2;
+    if (luck([tileI, tileJ, "token-exists"].toString()) < 0.5) {
+      this.token = luck([tileI, tileJ, "token-value"].toString()) < 0.5 ? 1 : 2;
       this.setText();
     }
   }
@@ -184,14 +197,45 @@ function updateStatus() {
 }
 updateStatus();
 
+function clearCells() {
+  cells.forEach((cell) => {
+    cell.rectangle.remove();
+    if (cell.text) {
+      cell.text.remove();
+    }
+  });
+  cells.clear();
+}
+
 // Initialize cells
-function spawnCells() {
-  for (let i = -NEIGHBORHOOD_SIZE; i < NEIGHBORHOOD_SIZE; i++) {
-    for (let j = -NEIGHBORHOOD_SIZE; j < NEIGHBORHOOD_SIZE; j++) {
+function spawnCells(center: leaflet.LatLng) {
+  clearCells();
+
+  const centerI = Math.round(
+    (center.lat - CLASSROOM_LATLNG.lat) / TILE_DEGREES,
+  );
+  const centerJ = Math.round(
+    (center.lng - CLASSROOM_LATLNG.lng) / TILE_DEGREES,
+  );
+
+  for (
+    let i = centerI - NEIGHBORHOOD_SIZE;
+    i < centerI + NEIGHBORHOOD_SIZE;
+    i++
+  ) {
+    for (
+      let j = centerJ - NEIGHBORHOOD_SIZE;
+      j < centerJ + NEIGHBORHOOD_SIZE;
+      j++
+    ) {
       if (luck([i, j].toString()) < SPAWN_PROBABILITY) {
-        cells.set(`${i},${j}`, new Cell(i, j));
+        cells.set(`${i},${j}`, new Cell(i, j, center));
       }
     }
   }
 }
-spawnCells();
+spawnCells(map.getCenter());
+
+map.on("moveend", () => {
+  spawnCells(map.getCenter());
+});
