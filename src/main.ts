@@ -8,6 +8,25 @@ import "./_leafletWorkaround.ts";
 import luck from "./_luck.ts";
 // #endregion
 
+// #region Create divs
+const mapDiv = document.createElement("div");
+mapDiv.id = "map";
+document.body.append(mapDiv);
+
+const infoPanel = document.createElement("div");
+infoPanel.id = "infoPanel";
+document.body.append(infoPanel);
+
+const statusPanel = document.createElement("div");
+statusPanel.id = "statusPanel";
+infoPanel.append(statusPanel);
+
+const controlPanel = document.createElement("div");
+controlPanel.id = "controlPanel";
+controlPanel.innerHTML = "Controls: <br> w,a,s,d to move";
+infoPanel.append(controlPanel);
+// #endregion
+
 // #region Gameplay parameters
 const GAMEPLAY_ZOOM_LEVEL = 19;
 const TILE_DEGREES = 1e-4;
@@ -19,7 +38,37 @@ let gameWon = false;
 const cells = new Map<string, Cell>();
 // #endregion
 
-// #region Player class
+// #region Leaflet map setup
+// Default location
+const CLASSROOM_LATLNG = leaflet.latLng(
+  36.997936938057016,
+  -122.05703507501151,
+);
+
+const NULL_ISLAND = leaflet.latLng(0, 0);
+
+// Map parameters
+const MIN_ZOOM_LEVEL = 17;
+
+const map = leaflet.map(mapDiv, {
+  center: CLASSROOM_LATLNG,
+  zoom: GAMEPLAY_ZOOM_LEVEL,
+  minZoom: MIN_ZOOM_LEVEL,
+  zoomControl: false,
+  scrollWheelZoom: true,
+});
+
+leaflet
+  .tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution:
+      '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  })
+  .addTo(map);
+
+// #endregion
+
+// #region Player class and functions
 class Player {
   latlng: leaflet.LatLng;
   tileI: number;
@@ -53,6 +102,30 @@ class Player {
     this.marker.setLatLng(this.latlng);
   }
 }
+
+// Player movement
+function updatePlayer(di: number, dj: number) {
+  player.move(di, dj);
+  map.setView(player.latlng, map.getZoom());
+}
+
+// Handle keyboard input for movement
+document.addEventListener("keydown", (e) => {
+  switch (e.key) {
+    case "w":
+      updatePlayer(1, 0);
+      break;
+    case "s":
+      updatePlayer(-1, 0);
+      break;
+    case "a":
+      updatePlayer(0, -1);
+      break;
+    case "d":
+      updatePlayer(0, 1);
+      break;
+  }
+});
 // #endregion
 
 // #region Cell class
@@ -133,54 +206,6 @@ class Cell {
 }
 // #endregion
 
-// #region Create divs
-const mapDiv = document.createElement("div");
-mapDiv.id = "map";
-document.body.append(mapDiv);
-
-const infoPanel = document.createElement("div");
-infoPanel.id = "infoPanel";
-document.body.append(infoPanel);
-
-const statusPanel = document.createElement("div");
-statusPanel.id = "statusPanel";
-infoPanel.append(statusPanel);
-
-const controlPanel = document.createElement("div");
-controlPanel.id = "controlPanel";
-controlPanel.innerHTML = "Controls: <br> w,a,s,d to move";
-infoPanel.append(controlPanel);
-// #endregion
-
-// #region Leaflet map setup
-// Default location
-const CLASSROOM_LATLNG = leaflet.latLng(
-  36.997936938057016,
-  -122.05703507501151,
-);
-
-const NULL_ISLAND = leaflet.latLng(0, 0);
-
-// Map parameters
-const MIN_ZOOM_LEVEL = 17;
-
-const map = leaflet.map(mapDiv, {
-  center: CLASSROOM_LATLNG,
-  zoom: GAMEPLAY_ZOOM_LEVEL,
-  minZoom: MIN_ZOOM_LEVEL,
-  zoomControl: false,
-  scrollWheelZoom: true,
-});
-
-leaflet
-  .tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19,
-    attribution:
-      '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  })
-  .addTo(map);
-// #endregion
-
 const player = new Player(CLASSROOM_LATLNG);
 
 // Handle token status updates
@@ -246,28 +271,4 @@ map.on("moveend", () => {
     }
   }
   spawnCells();
-});
-
-// Player movement
-function updatePlayer(di: number, dj: number) {
-  player.move(di, dj);
-  map.setView(player.latlng, map.getZoom());
-}
-
-// Handle keyboard input for movement
-document.addEventListener("keydown", (e) => {
-  switch (e.key) {
-    case "w":
-      updatePlayer(1, 0);
-      break;
-    case "s":
-      updatePlayer(-1, 0);
-      break;
-    case "a":
-      updatePlayer(0, -1);
-      break;
-    case "d":
-      updatePlayer(0, 1);
-      break;
-  }
 });
