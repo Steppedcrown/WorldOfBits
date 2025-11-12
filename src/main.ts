@@ -12,8 +12,8 @@ import luck from "./_luck.ts";
 const GAMEPLAY_ZOOM_LEVEL = 19;
 const TILE_DEGREES = 1e-4;
 const SPAWN_PROBABILITY = 0.1;
-const INTERACTION_RANGE = 3;
-const ENDGAME_TOKEN_VALUE = 64;
+const INTERACTION_RANGE = 5;
+const ENDGAME_TOKEN_VALUE = 32;
 let gameWon = false;
 
 const cells = new Map<string, Cell>();
@@ -213,19 +213,7 @@ function updateStatus() {
 updateStatus();
 
 // Cell functions
-function clearCells() {
-  cells.forEach((cell) => {
-    cell.rectangle.remove();
-    if (cell.text) {
-      cell.text.remove();
-    }
-  });
-  cells.clear();
-}
-
 function spawnCells() {
-  clearCells();
-
   const bounds = map.getBounds();
   const northEast = bounds.getNorthEast();
   const southWest = bounds.getSouthWest();
@@ -237,8 +225,9 @@ function spawnCells() {
 
   for (let i = minI; i <= maxI; i++) {
     for (let j = minJ; j <= maxJ; j++) {
-      if (luck([i, j].toString()) < SPAWN_PROBABILITY) {
-        cells.set(`${i},${j}`, new Cell(i, j));
+      const key = `${i},${j}`;
+      if (!cells.has(key) && luck([i, j].toString()) < SPAWN_PROBABILITY) {
+        cells.set(key, new Cell(i, j));
       }
     }
   }
@@ -246,6 +235,16 @@ function spawnCells() {
 spawnCells();
 
 map.on("moveend", () => {
+  const bounds = map.getBounds();
+  for (const [key, cell] of cells.entries()) {
+    if (!bounds.intersects(cell.bounds)) {
+      cell.rectangle.remove();
+      if (cell.text) {
+        cell.text.remove();
+      }
+      cells.delete(key);
+    }
+  }
   spawnCells();
 });
 

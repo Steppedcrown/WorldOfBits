@@ -58,4 +58,4 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
 - [x] allow for player to zoom on map with scroll wheel
 - [x] when spawning cells, spawn them to cover the entire visible map
 - [x] decrease neighborhood size, decrease interaction range, increase endgame token value
-- [ ] only despawn and cells if they are off the map on the moveend event
+- [x] only despawn and cells if they are off the map on the moveend event
