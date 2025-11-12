@@ -16,7 +16,7 @@ Assignments
 Key technical challenge: Assemble a map-based user interface using the Leaflet mapping framework
 Key gameplay challenge: Can players collect and craft tokens from nearby locations to finally make one of sufficiently high value?
 
-### Steps
+### Steps a
 
 - [x] copy main.ts to reference.ts for future reference
 - [x] delete everything in main.ts
@@ -39,3 +39,17 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
 - [x] give the option to restart the game or continue playing
 - [x] create a new game parameter for interactionRange, measured in tiles
 - [x] players can only interact with tiles within the interactionRange of the player
+
+## D3.b: Globe-spanning Gameplay
+
+Key technical challenge: Assemble a map-based user interface using the Leaflet mapping framework
+Key gameplay challenge: Can players collect and craft tokens from nearby locations to finally make one of sufficiently high value?
+
+### Steps b
+
+- [ ] modify the spawn cells function to start at any coordinate value
+- [ ] listen for the moveend event and respawn cells around the new center point
+- [ ] despawn all other cells when new cells are spawned and do not remember their state
+- [ ] allow for player movement with wasd to move one cell's worth in each direction
+- [ ] display this control scheme in game
+- [ ] decrease neighborhood size, decrease interaction range, increase endgame token value
