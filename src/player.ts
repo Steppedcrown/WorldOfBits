@@ -8,6 +8,7 @@ export class Player {
   tileJ: number;
   marker: leaflet.Marker;
   private heldToken: number | undefined;
+  private gameWon = false;
 
   constructor(latlng: leaflet.LatLng) {
     this.latlng = latlng;
@@ -25,6 +26,32 @@ export class Player {
     this.heldToken = value;
   }
 
+  updateTokenStatus(statusPanel: HTMLDivElement, ENDGAME_TOKEN_VALUE: number) {
+    if (this.heldToken) {
+      statusPanel.textContent = `Holding token: ${this.heldToken}`;
+      if (this.heldToken === ENDGAME_TOKEN_VALUE && !this.gameWon) {
+        this.gameWon = true;
+        statusPanel.textContent += " - You Win! ";
+
+        const restartButton = document.createElement("button");
+        restartButton.textContent = "Restart";
+        restartButton.onclick = () => location.reload();
+        statusPanel.append(restartButton);
+
+        const continueButton = document.createElement("button");
+        continueButton.textContent = "Continue";
+        continueButton.onclick = () => {
+          restartButton.remove();
+          continueButton.remove();
+          statusPanel.textContent = `Holding token: ${this.heldToken}`;
+        };
+        statusPanel.append(continueButton);
+      }
+    } else {
+      statusPanel.textContent = "Not holding a token";
+    }
+  }
+
   move(di: number, dj: number) {
     this.tileI += di;
     this.tileJ += dj;
@@ -40,15 +67,19 @@ export function setupPlayerMovement(player: Player) {
   document.addEventListener("keydown", (e) => {
     switch (e.key) {
       case "w":
+      case "ArrowUp":
         updatePlayer(1, 0, player);
         break;
       case "s":
+      case "ArrowDown":
         updatePlayer(-1, 0, player);
         break;
       case "a":
+      case "ArrowLeft":
         updatePlayer(0, -1, player);
         break;
       case "d":
+      case "ArrowRight":
         updatePlayer(0, 1, player);
         break;
     }

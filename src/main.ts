@@ -4,7 +4,7 @@ import "./style.css";
 
 import "./_leafletWorkaround.ts";
 import { Cell, spawnCells } from "./cell.ts";
-import { CLASSROOM_LATLNG, createMap } from "./map.ts";
+import { CLASSROOM_LATLNG, createMap, setupMapEventListeners } from "./map.ts";
 import { Player, setupPlayerMovement } from "./player.ts";
 import { WorldState } from "./world.ts";
 
@@ -23,62 +23,34 @@ infoPanel.append(statusPanel);
 
 const controlPanel = document.createElement("div");
 controlPanel.id = "controlPanel";
-controlPanel.innerHTML = "Controls: <br> w,a,s,d to move";
+controlPanel.innerHTML = "Controls: w,a,s,d / arrows to move";
 infoPanel.append(controlPanel);
 // #endregion
 
-const map = createMap();
-
 // #region Gameplay variables
 const ENDGAME_TOKEN_VALUE = 32;
-let gameWon = false;
-
 const worldState = new WorldState();
 const cells = new Map<string, Cell>();
-
-const player = new Player(CLASSROOM_LATLNG);
 // #endregion
 
+// Setup map and player
+createMap();
+const player = new Player(CLASSROOM_LATLNG);
 setupPlayerMovement(player);
+setupMapEventListeners(
+  cells,
+  worldState,
+  player,
+  () => player.updateTokenStatus(statusPanel, ENDGAME_TOKEN_VALUE),
+);
 
-// Handle token status updates
-function updateTokenStatus() {
-  const heldToken = player.getHeldToken();
-  if (heldToken) {
-    statusPanel.textContent = `Holding token: ${heldToken}`;
-    if (heldToken === ENDGAME_TOKEN_VALUE && !gameWon) {
-      gameWon = true;
-      statusPanel.textContent += " - You Win! ";
+// Initialize player token status
+player.updateTokenStatus(statusPanel, ENDGAME_TOKEN_VALUE);
 
-      const restartButton = document.createElement("button");
-      restartButton.textContent = "Restart";
-      restartButton.onclick = () => location.reload();
-      statusPanel.append(restartButton);
-
-      const continueButton = document.createElement("button");
-      continueButton.textContent = "Continue";
-      continueButton.onclick = () => {
-        restartButton.remove();
-        continueButton.remove();
-        statusPanel.textContent = `Holding token: ${heldToken}`;
-      };
-      statusPanel.append(continueButton);
-    }
-  } else {
-    statusPanel.textContent = "Not holding a token";
-  }
-}
-updateTokenStatus();
-
-spawnCells(cells, worldState, player, updateTokenStatus);
-
-map.on("moveend", () => {
-  for (const [_key, cell] of cells.entries()) {
-    cell.rectangle.remove();
-    if (cell.text) {
-      cell.text.remove();
-    }
-  }
-  cells.clear();
-  spawnCells(cells, worldState, player, updateTokenStatus);
-});
+// Initialize map with cells
+spawnCells(
+  cells,
+  worldState,
+  player,
+  () => player.updateTokenStatus(statusPanel, ENDGAME_TOKEN_VALUE),
+);

@@ -74,6 +74,6 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
 - [x] Modify the `moveend` event handler to clear all visual elements and then redraw the entire visible map from scratch, using the `WorldState` map to ensure persistence of modified cells that scroll back into view.
 - [x] refactor code to be more consistent: create seperate files for the player and cell classes and their related functions
 - [x] create a map.ts to handle map parameters and creation
-- [ ] allow for player to move with arrow keys
-- [ ] move the updateTokenStatus function to the module that makes the most sense for it
-- [ ] incorporate the moveend listener into the map.ts module
+- [x] allow for player to move with arrow keys
+- [x] move the updateTokenStatus function to the module that makes the most sense for it
+- [x] incorporate the moveend listener into the map.ts moduleVi

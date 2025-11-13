@@ -1,5 +1,8 @@
 // @deno-types="npm:@types/leaflet"
 import leaflet from "leaflet";
+import { Cell, spawnCells } from "./cell.ts";
+import { Player } from "./player.ts";
+import { WorldState } from "./world.ts";
 
 // Parameters
 export const TILE_DEGREES = 1e-4;
@@ -32,4 +35,22 @@ export function createMap(): leaflet.Map {
     .addTo(map);
 
   return map;
+}
+
+export function setupMapEventListeners(
+  cells: Map<string, Cell>,
+  worldState: WorldState,
+  player: Player,
+  updateStatus: () => void,
+) {
+  map.on("moveend", () => {
+    for (const [_key, cell] of cells.entries()) {
+      cell.rectangle.remove();
+      if (cell.text) {
+        cell.text.remove();
+      }
+    }
+    cells.clear();
+    spawnCells(cells, worldState, player, updateStatus);
+  });
 }
