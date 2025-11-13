@@ -51,11 +51,10 @@ export class Cell {
       if (player.getHeldToken()) {
         if (!this.token) {
           this.setToken(player.getHeldToken());
-          worldState.setCellToken(currentCellPoint, this.token!);
         } else if (this.token === player.getHeldToken()) {
           this.setToken(this.token * 2);
-          worldState.setCellToken(currentCellPoint, this.token!);
         }
+        worldState.setCellToken(currentCellPoint, this.token!);
         player.setHeldToken(undefined);
         updateStatus();
       } else if (this.token) {
@@ -70,23 +69,21 @@ export class Cell {
   setToken(value: number | undefined) {
     this.token = value;
 
+    // Remove existing text marker
     if (this.text) {
       this.text.remove();
       this.text = undefined;
     }
 
+    // Update text marker if token exists
     if (this.token) {
-      this.setText();
+      this.text = leaflet.marker(this.bounds.getCenter(), {
+        icon: leaflet.divIcon({
+          className: "token-label",
+          html: `<div>${this.token}</div>`,
+        }),
+      }).addTo(map);
     }
-  }
-
-  setText() {
-    this.text = leaflet.marker(this.bounds.getCenter(), {
-      icon: leaflet.divIcon({
-        className: "token-label",
-        html: `<div>${this.token}</div>`,
-      }),
-    }).addTo(map);
   }
 }
 

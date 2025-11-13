@@ -6,8 +6,8 @@ export class Player {
   latlng: leaflet.LatLng;
   tileI: number;
   tileJ: number;
-  private heldToken: number | undefined;
   marker: leaflet.Marker;
+  private heldToken: number | undefined;
 
   constructor(latlng: leaflet.LatLng) {
     this.latlng = latlng;
@@ -36,7 +36,7 @@ export class Player {
   }
 }
 
-export function handlePlayerMovement(player: Player) {
+export function setupPlayerMovement(player: Player) {
   document.addEventListener("keydown", (e) => {
     switch (e.key) {
       case "w":

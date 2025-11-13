@@ -1,22 +1,19 @@
 // @deno-types="npm:@types/leaflet"
 import leaflet from "leaflet";
 
+// Parameters
 export const TILE_DEGREES = 1e-4;
 export const GAMEPLAY_ZOOM_LEVEL = 19;
+const MIN_ZOOM_LEVEL = 17;
 
-// Default location
+// Locations
 export const CLASSROOM_LATLNG = leaflet.latLng(
   36.997936938057016,
   -122.05703507501151,
 );
-
 export const NULL_ISLAND = leaflet.latLng(0, 0);
 
-// Map parameters
-const MIN_ZOOM_LEVEL = 17;
-
 export let map: leaflet.Map;
-
 export function createMap(): leaflet.Map {
   map = leaflet.map("map", {
     center: CLASSROOM_LATLNG,

@@ -5,7 +5,7 @@ import "./style.css";
 import "./_leafletWorkaround.ts";
 import { Cell, spawnCells } from "./cell.ts";
 import { CLASSROOM_LATLNG, createMap } from "./map.ts";
-import { handlePlayerMovement, Player } from "./player.ts";
+import { Player, setupPlayerMovement } from "./player.ts";
 import { WorldState } from "./world.ts";
 
 // #region Create divs
@@ -29,16 +29,17 @@ infoPanel.append(controlPanel);
 
 const map = createMap();
 
-// #region Gameplay parameters
+// #region Gameplay variables
 const ENDGAME_TOKEN_VALUE = 32;
 let gameWon = false;
 
 const worldState = new WorldState();
 const cells = new Map<string, Cell>();
-// #endregion
 
 const player = new Player(CLASSROOM_LATLNG);
-handlePlayerMovement(player);
+// #endregion
+
+setupPlayerMovement(player);
 
 // Handle token status updates
 function updateTokenStatus() {
