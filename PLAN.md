@@ -72,3 +72,5 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
 - [x] Update all player interactions (collecting, placing, merging tokens) to modify the `WorldState` map accordingly.
 - [x] When a cell's state changes to the default (e.g., empty), remove its entry from the map to conserve memory.
 - [x] Modify the `moveend` event handler to clear all visual elements and then redraw the entire visible map from scratch, using the `WorldState` map to ensure persistence of modified cells that scroll back into view.
+- [x] refactor code to be more consistent: create seperate files for the player and cell classes and their related functions
+- [x] create a map.ts to handle map parameters and creation
