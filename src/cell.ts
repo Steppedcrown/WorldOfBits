@@ -6,7 +6,7 @@ import { Player } from "./player.ts";
 import { WorldState } from "./world.ts";
 
 const SPAWN_PROBABILITY = 0.1;
-const INTERACTION_RANGE = 5;
+const INTERACTION_RANGE = 3;
 
 export class Cell {
   i: number;
