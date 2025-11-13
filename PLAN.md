@@ -76,4 +76,5 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
 - [x] create a map.ts to handle map parameters and creation
 - [x] allow for player to move with arrow keys
 - [x] move the updateTokenStatus function to the module that makes the most sense for it
-- [x] incorporate the moveend listener into the map.ts moduleVi
+- [x] incorporate the moveend listener into the map.ts module
+- [ ] rename NULL_ISLAND to WORLD_ORIGIN and CLASSROOM_LATLNG to DEFAULT_SPAWN for clarity
