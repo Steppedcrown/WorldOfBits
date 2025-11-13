@@ -10,16 +10,16 @@ export const GAMEPLAY_ZOOM_LEVEL = 19;
 const MIN_ZOOM_LEVEL = 17;
 
 // Locations
-export const CLASSROOM_LATLNG = leaflet.latLng(
+export const DEFAULT_SPAWN = leaflet.latLng(
   36.997936938057016,
   -122.05703507501151,
 );
-export const NULL_ISLAND = leaflet.latLng(0, 0);
+export const WORLD_ORIGIN = leaflet.latLng(0, 0);
 
 export let map: leaflet.Map;
 export function createMap(): leaflet.Map {
   map = leaflet.map("map", {
-    center: CLASSROOM_LATLNG,
+    center: DEFAULT_SPAWN,
     zoom: GAMEPLAY_ZOOM_LEVEL,
     minZoom: MIN_ZOOM_LEVEL,
     zoomControl: false,

@@ -1,6 +1,6 @@
 // @deno-types="npm:@types/leaflet"
 import leaflet from "leaflet";
-import { map, NULL_ISLAND, TILE_DEGREES } from "./map.ts";
+import { map, TILE_DEGREES, WORLD_ORIGIN } from "./map.ts";
 
 export class Player {
   latlng: leaflet.LatLng;
@@ -12,8 +12,8 @@ export class Player {
 
   constructor(latlng: leaflet.LatLng) {
     this.latlng = latlng;
-    this.tileI = Math.round((latlng.lat - NULL_ISLAND.lat) / TILE_DEGREES);
-    this.tileJ = Math.round((latlng.lng - NULL_ISLAND.lng) / TILE_DEGREES);
+    this.tileI = Math.round((latlng.lat - WORLD_ORIGIN.lat) / TILE_DEGREES);
+    this.tileJ = Math.round((latlng.lng - WORLD_ORIGIN.lng) / TILE_DEGREES);
     this.marker = leaflet.marker(latlng).addTo(map);
     this.marker.bindTooltip("You");
   }

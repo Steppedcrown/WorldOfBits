@@ -4,7 +4,7 @@ import "./style.css";
 
 import "./_leafletWorkaround.ts";
 import { Cell, spawnCells } from "./cell.ts";
-import { CLASSROOM_LATLNG, createMap, setupMapEventListeners } from "./map.ts";
+import { createMap, DEFAULT_SPAWN, setupMapEventListeners } from "./map.ts";
 import { Player, setupPlayerMovement } from "./player.ts";
 import { WorldState } from "./world.ts";
 
@@ -35,7 +35,7 @@ const cells = new Map<string, Cell>();
 
 // Setup map and player
 createMap();
-const player = new Player(CLASSROOM_LATLNG);
+const player = new Player(DEFAULT_SPAWN);
 setupPlayerMovement(player);
 setupMapEventListeners(
   cells,

@@ -1,7 +1,7 @@
 // @deno-types="npm:@types/leaflet"
 import leaflet, { Point } from "leaflet";
 import luck from "./_luck.ts";
-import { map, NULL_ISLAND, TILE_DEGREES } from "./map.ts";
+import { map, TILE_DEGREES, WORLD_ORIGIN } from "./map.ts";
 import { Player } from "./player.ts";
 import { WorldState } from "./world.ts";
 
@@ -28,12 +28,12 @@ export class Cell {
     this.j = j;
     this.bounds = leaflet.latLngBounds([
       [
-        NULL_ISLAND.lat + i * TILE_DEGREES,
-        NULL_ISLAND.lng + j * TILE_DEGREES,
+        WORLD_ORIGIN.lat + i * TILE_DEGREES,
+        WORLD_ORIGIN.lng + j * TILE_DEGREES,
       ],
       [
-        NULL_ISLAND.lat + (i + 1) * TILE_DEGREES,
-        NULL_ISLAND.lng + (j + 1) * TILE_DEGREES,
+        WORLD_ORIGIN.lat + (i + 1) * TILE_DEGREES,
+        WORLD_ORIGIN.lng + (j + 1) * TILE_DEGREES,
       ],
     ]);
 
@@ -97,10 +97,10 @@ export function spawnCells(
   const northEast = bounds.getNorthEast();
   const southWest = bounds.getSouthWest();
 
-  const minI = Math.round((southWest.lat - NULL_ISLAND.lat) / TILE_DEGREES);
-  const maxI = Math.round((northEast.lat - NULL_ISLAND.lat) / TILE_DEGREES);
-  const minJ = Math.round((southWest.lng - NULL_ISLAND.lng) / TILE_DEGREES);
-  const maxJ = Math.round((northEast.lng - NULL_ISLAND.lng) / TILE_DEGREES);
+  const minI = Math.round((southWest.lat - WORLD_ORIGIN.lat) / TILE_DEGREES);
+  const maxI = Math.round((northEast.lat - WORLD_ORIGIN.lat) / TILE_DEGREES);
+  const minJ = Math.round((southWest.lng - WORLD_ORIGIN.lng) / TILE_DEGREES);
+  const maxJ = Math.round((northEast.lng - WORLD_ORIGIN.lng) / TILE_DEGREES);
 
   for (let i = minI; i <= maxI; i++) {
     for (let j = minJ; j <= maxJ; j++) {
