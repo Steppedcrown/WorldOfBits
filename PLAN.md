@@ -83,9 +83,10 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
 
 ### Steps d
 
-- [ ] Create an interface for player movement to abstract away the specific implementation (e.g., `MovementController`).
-- [ ] Implement a `GeolocationMovementController` that uses the browser's geolocation API to update the player's position.
-- [ ] Implement a `ButtonMovementController` that uses on-screen buttons (or keyboard) for movement.
+- [x] Create an interface for player movement to abstract away the specific implementation (e.g., `MovementController`).
+- [x] Implement a `GeolocationMovementController` that uses the browser's geolocation API to update the player's position.
+- [x] Implement a `ButtonMovementController` that uses on-screen buttons (or keyboard) for movement.
+- [ ] replace the hold movement system with the new one
 - [ ] Add a mechanism to switch between movement controllers through a URL query parameter (e.g., `?movement=geo` or `?movement=buttons`).
 - [ ] Create a `GameState` object to hold all the data that needs to be persisted (e.g., `WorldState`, player position, held token).
 - [ ] Implement functions to save the `GameState` to `localStorage` whenever it changes.
