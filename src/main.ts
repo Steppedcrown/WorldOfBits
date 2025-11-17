@@ -14,6 +14,7 @@ import {
   setupMapEventListeners,
 } from "./map.ts";
 import { MovementController } from "./movement.ts";
+import { loadGameState, saveGameState } from "./persistence.ts";
 import { Player } from "./player.ts";
 import { WorldState } from "./world.ts";
 
@@ -38,15 +39,15 @@ infoPanel.append(controlPanel);
 
 // #region Gameplay variables
 const ENDGAME_TOKEN_VALUE = 32;
-const worldState = new WorldState();
+let worldState = new WorldState();
 const cells = new Map<string, Cell>();
 // #endregion
 
 // Setup map and player
 createMap();
 
-function initializeGame(startLatLng: leaflet.LatLng) {
-  const player = new Player(startLatLng);
+function initializeGame(player: Player, initialWorldState: WorldState) {
+  worldState = initialWorldState;
 
   const urlParams = new URLSearchParams(globalThis.location.search);
   const movementType = urlParams.get("movement");
@@ -63,7 +64,10 @@ function initializeGame(startLatLng: leaflet.LatLng) {
     cells,
     worldState,
     player,
-    () => player.updateTokenStatus(statusPanel, ENDGAME_TOKEN_VALUE),
+    () => {
+      player.updateTokenStatus(statusPanel, ENDGAME_TOKEN_VALUE);
+      saveGameState(player, worldState);
+    },
   );
 
   // Initialize player token status
@@ -80,13 +84,20 @@ function initializeGame(startLatLng: leaflet.LatLng) {
   map.setView(player.latlng, map.getZoom());
 }
 
-navigator.geolocation.getCurrentPosition(
-  (position) => {
-    initializeGame(
-      new leaflet.LatLng(position.coords.latitude, position.coords.longitude),
-    );
-  },
-  () => {
-    initializeGame(DEFAULT_SPAWN);
-  },
-);
+const savedGame = loadGameState();
+if (savedGame) {
+  initializeGame(savedGame.player, savedGame.worldState);
+} else {
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const player = new Player(
+        new leaflet.LatLng(position.coords.latitude, position.coords.longitude),
+      );
+      initializeGame(player, new WorldState());
+    },
+    () => {
+      const player = new Player(DEFAULT_SPAWN);
+      initializeGame(player, new WorldState());
+    },
+  );
+}

@@ -16,4 +16,12 @@ export class WorldState {
     const key = this.pointToKey(p);
     return this.cellStates.get(key);
   }
+
+  getSerializableState(): [string, number][] {
+    return Array.from(this.cellStates.entries());
+  }
+
+  loadFromSerializableState(state: [string, number][]) {
+    this.cellStates = new Map(state);
+  }
 }

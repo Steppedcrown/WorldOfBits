@@ -89,7 +89,7 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
 - [x] Integrate the new movement system with the main game loop, so the player's character on the map moves according to the selected movement controller.
 - [x] Add a mechanism to switch between movement controllers through a URL query parameter (e.g., `?movement=geo` or `?movement=buttons`).
 - [x] Create a `GameState` object to hold all the data that needs to be persisted (e.g., `WorldState`, player position, held token).
-- [ ] If no saved state is found, start a new game.
-- [ ] Implement functions to save the `GameState` to `localStorage` whenever it changes.
-- [ ] Implement a function to load the `GameState` from `localStorage` when the game starts.
+- [x] If no saved state is found, start a new game.
+- [x] Implement functions to save the `GameState` to `localStorage` whenever it changes.
+- [x] Implement a function to load the `GameState` from `localStorage` when the game starts.
 - [ ] Add a "New Game" button that clears the saved game state from `localStorage` and reloads the page to start fresh.
