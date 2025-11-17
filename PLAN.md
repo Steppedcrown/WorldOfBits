@@ -92,4 +92,4 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
 - [x] If no saved state is found, start a new game.
 - [x] Implement functions to save the `GameState` to `localStorage` whenever it changes.
 - [x] Implement a function to load the `GameState` from `localStorage` when the game starts.
-- [ ] Add a "New Game" button that clears the saved game state from `localStorage` and reloads the page to start fresh.
+- [x] Add a "New Game" button that clears the saved game state from `localStorage` and reloads the page to start fresh in place of the controls display

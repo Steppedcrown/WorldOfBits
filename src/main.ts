@@ -6,7 +6,7 @@ import leaflet from "leaflet";
 import "./_leafletWorkaround.ts";
 import { ButtonMovementController } from "./button.ts";
 import { Cell, spawnCells } from "./cell.ts";
-import { loadGameState, saveGameState } from "./gamestate.ts";
+import { clearGameState, loadGameState, saveGameState } from "./gamestate.ts";
 import { GeolocationMovementController } from "./geolocation.ts";
 import {
   createMap,
@@ -33,7 +33,14 @@ infoPanel.append(statusPanel);
 
 const controlPanel = document.createElement("div");
 controlPanel.id = "controlPanel";
-controlPanel.innerHTML = "Controls: w,a,s,d / arrows to move";
+const newGameButton = document.createElement("button");
+newGameButton.textContent = "New Game";
+newGameButton.onclick = () => {
+  clearGameState();
+  location.reload();
+};
+controlPanel.innerHTML = "";
+controlPanel.append(newGameButton);
 infoPanel.append(controlPanel);
 // #endregion
 

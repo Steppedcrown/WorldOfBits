@@ -51,3 +51,7 @@ export function loadGameState(): {
 
   return { player, worldState };
 }
+
+export function clearGameState() {
+  localStorage.removeItem(GAME_STATE_KEY);
+}
