@@ -3,9 +3,12 @@ import "leaflet/dist/leaflet.css";
 import "./style.css";
 
 import "./_leafletWorkaround.ts";
+import { ButtonMovementController } from "./button.ts";
 import { Cell, spawnCells } from "./cell.ts";
+import { GeolocationMovementController } from "./geolocation.ts";
 import { createMap, DEFAULT_SPAWN, setupMapEventListeners } from "./map.ts";
-import { Player, setupPlayerMovement } from "./player.ts";
+import { MovementController } from "./movement.ts";
+import { Player } from "./player.ts";
 import { WorldState } from "./world.ts";
 
 // #region Create divs
@@ -36,7 +39,18 @@ const cells = new Map<string, Cell>();
 // Setup map and player
 createMap();
 const player = new Player(DEFAULT_SPAWN);
-setupPlayerMovement(player);
+
+const urlParams = new URLSearchParams(globalThis.location.search);
+const movementType = urlParams.get("movement");
+
+let movementController: MovementController;
+if (movementType === "geo") {
+  movementController = new GeolocationMovementController();
+} else {
+  movementController = new ButtonMovementController();
+}
+movementController.setup(player);
+
 setupMapEventListeners(
   cells,
   worldState,

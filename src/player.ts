@@ -62,31 +62,3 @@ export class Player {
     this.marker.setLatLng(this.latlng);
   }
 }
-
-export function setupPlayerMovement(player: Player) {
-  document.addEventListener("keydown", (e) => {
-    switch (e.key) {
-      case "w":
-      case "ArrowUp":
-        updatePlayer(1, 0, player);
-        break;
-      case "s":
-      case "ArrowDown":
-        updatePlayer(-1, 0, player);
-        break;
-      case "a":
-      case "ArrowLeft":
-        updatePlayer(0, -1, player);
-        break;
-      case "d":
-      case "ArrowRight":
-        updatePlayer(0, 1, player);
-        break;
-    }
-  });
-}
-
-function updatePlayer(di: number, dj: number, player: Player) {
-  player.move(di, dj);
-  map.setView(player.latlng, map.getZoom());
-}
