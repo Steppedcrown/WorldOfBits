@@ -2,11 +2,17 @@
 import "leaflet/dist/leaflet.css";
 import "./style.css";
 
+import leaflet from "leaflet";
 import "./_leafletWorkaround.ts";
 import { ButtonMovementController } from "./button.ts";
 import { Cell, spawnCells } from "./cell.ts";
 import { GeolocationMovementController } from "./geolocation.ts";
-import { createMap, DEFAULT_SPAWN, setupMapEventListeners } from "./map.ts";
+import {
+  createMap,
+  DEFAULT_SPAWN,
+  map,
+  setupMapEventListeners,
+} from "./map.ts";
 import { MovementController } from "./movement.ts";
 import { Player } from "./player.ts";
 import { WorldState } from "./world.ts";
@@ -38,33 +44,49 @@ const cells = new Map<string, Cell>();
 
 // Setup map and player
 createMap();
-const player = new Player(DEFAULT_SPAWN);
 
-const urlParams = new URLSearchParams(globalThis.location.search);
-const movementType = urlParams.get("movement");
+function initializeGame(startLatLng: leaflet.LatLng) {
+  const player = new Player(startLatLng);
 
-let movementController: MovementController;
-if (movementType === "geo") {
-  movementController = new GeolocationMovementController();
-} else {
-  movementController = new ButtonMovementController();
+  const urlParams = new URLSearchParams(globalThis.location.search);
+  const movementType = urlParams.get("movement");
+
+  let movementController: MovementController;
+  if (movementType === "geo") {
+    movementController = new GeolocationMovementController();
+  } else {
+    movementController = new ButtonMovementController();
+  }
+  movementController.setup(player);
+
+  setupMapEventListeners(
+    cells,
+    worldState,
+    player,
+    () => player.updateTokenStatus(statusPanel, ENDGAME_TOKEN_VALUE),
+  );
+
+  // Initialize player token status
+  player.updateTokenStatus(statusPanel, ENDGAME_TOKEN_VALUE);
+
+  // Initialize map with cells
+  spawnCells(
+    cells,
+    worldState,
+    player,
+    () => player.updateTokenStatus(statusPanel, ENDGAME_TOKEN_VALUE),
+  );
+
+  map.setView(player.latlng, map.getZoom());
 }
-movementController.setup(player);
 
-setupMapEventListeners(
-  cells,
-  worldState,
-  player,
-  () => player.updateTokenStatus(statusPanel, ENDGAME_TOKEN_VALUE),
-);
-
-// Initialize player token status
-player.updateTokenStatus(statusPanel, ENDGAME_TOKEN_VALUE);
-
-// Initialize map with cells
-spawnCells(
-  cells,
-  worldState,
-  player,
-  () => player.updateTokenStatus(statusPanel, ENDGAME_TOKEN_VALUE),
+navigator.geolocation.getCurrentPosition(
+  (position) => {
+    initializeGame(
+      new leaflet.LatLng(position.coords.latitude, position.coords.longitude),
+    );
+  },
+  () => {
+    initializeGame(DEFAULT_SPAWN);
+  },
 );
