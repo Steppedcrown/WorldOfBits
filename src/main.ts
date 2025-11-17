@@ -6,6 +6,7 @@ import leaflet from "leaflet";
 import "./_leafletWorkaround.ts";
 import { ButtonMovementController } from "./button.ts";
 import { Cell, spawnCells } from "./cell.ts";
+import { loadGameState, saveGameState } from "./gamestate.ts";
 import { GeolocationMovementController } from "./geolocation.ts";
 import {
   createMap,
@@ -14,7 +15,6 @@ import {
   setupMapEventListeners,
 } from "./map.ts";
 import { MovementController } from "./movement.ts";
-import { loadGameState, saveGameState } from "./persistence.ts";
 import { Player } from "./player.ts";
 import { WorldState } from "./world.ts";
 
