@@ -78,3 +78,19 @@ Key gameplay challenge: Can players collect and craft tokens from nearby locatio
 - [x] move the updateTokenStatus function to the module that makes the most sense for it
 - [x] incorporate the moveend listener into the map.ts module
 - [x] rename NULL_ISLAND to WORLD_ORIGIN and CLASSROOM_LATLNG to DEFAULT_SPAWN for clarity
+
+## D3.d: Gameplay Across Real-world Space and Time
+
+### Steps d
+
+- [ ] Create an interface for player movement to abstract away the specific implementation (e.g., `MovementController`).
+- [ ] Implement a `GeolocationMovementController` that uses the browser's geolocation API to update the player's position.
+- [ ] Implement a `ButtonMovementController` that uses on-screen buttons (or keyboard) for movement.
+- [ ] Add a mechanism to switch between movement controllers through a URL query parameter (e.g., `?movement=geo` or `?movement=buttons`).
+- [ ] Create a `GameState` object to hold all the data that needs to be persisted (e.g., `WorldState`, player position, held token).
+- [ ] Implement functions to save the `GameState` to `localStorage` whenever it changes.
+- [ ] Implement a function to load the `GameState` from `localStorage` when the game starts.
+- [ ] If no saved state is found, start a new game.
+- [ ] Add a "New Game" button that clears the saved game state from `localStorage` and reloads the page to start fresh.
+- [ ] Integrate the new movement system with the main game loop, so the player's character on the map moves according to the selected movement controller.
+- [ ] Ensure that the player's position is saved as part of the game state.
