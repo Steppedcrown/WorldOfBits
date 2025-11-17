@@ -4,7 +4,7 @@ import "./style.css";
 
 import leaflet from "leaflet";
 import "./_leafletWorkaround.ts";
-import { ButtonMovementController } from "./button.ts";
+import { ButtonMovementController, createMovementButtons } from "./button.ts";
 import { Cell, spawnCells } from "./cell.ts";
 import { clearGameState, loadGameState, saveGameState } from "./gamestate.ts";
 import { GeolocationMovementController } from "./geolocation.ts";
@@ -63,7 +63,9 @@ function initializeGame(player: Player, initialWorldState: WorldState) {
   if (movementType === "geo") {
     movementController = new GeolocationMovementController();
   } else {
-    movementController = new ButtonMovementController();
+    const buttonController = new ButtonMovementController();
+    movementController = buttonController;
+    createMovementButtons(player, controlPanel, buttonController);
   }
   movementController.setup(player);
 

@@ -26,8 +26,32 @@ export class ButtonMovementController implements MovementController {
     });
   }
 
-  private updatePlayer(di: number, dj: number, player: Player) {
+  public updatePlayer(di: number, dj: number, player: Player) {
     player.move(di, dj);
     map.setView(player.latlng, map.getZoom());
   }
+}
+
+export function createMovementButtons(
+  player: Player,
+  controlPanel: HTMLElement,
+  controller: ButtonMovementController,
+) {
+  const upButton = document.createElement("button");
+  upButton.textContent = "Up";
+  upButton.onclick = () => controller.updatePlayer(1, 0, player);
+
+  const downButton = document.createElement("button");
+  downButton.textContent = "Down";
+  downButton.onclick = () => controller.updatePlayer(-1, 0, player);
+
+  const leftButton = document.createElement("button");
+  leftButton.textContent = "Left";
+  leftButton.onclick = () => controller.updatePlayer(0, -1, player);
+
+  const rightButton = document.createElement("button");
+  rightButton.textContent = "Right";
+  rightButton.onclick = () => controller.updatePlayer(0, 1, player);
+
+  controlPanel.append(upButton, downButton, leftButton, rightButton);
 }
