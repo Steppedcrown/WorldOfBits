@@ -61,7 +61,7 @@ function initializeGame(player: Player, initialWorldState: WorldState) {
 
   let movementController: MovementController;
   if (movementType === "geo") {
-    movementController = new GeolocationMovementController();
+    movementController = new GeolocationMovementController(cells);
   } else {
     const buttonController = new ButtonMovementController(cells);
     movementController = buttonController;
