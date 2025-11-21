@@ -61,13 +61,24 @@ function initializeGame(player: Player, initialWorldState: WorldState) {
 
   let movementController: MovementController;
   if (movementType === "geo") {
-    movementController = new GeolocationMovementController(cells);
+    movementController = new GeolocationMovementController();
   } else {
     const buttonController = new ButtonMovementController(cells);
     movementController = buttonController;
     createMovementButtons(player, controlPanel, buttonController);
   }
   movementController.setup(player);
+
+  let lastPlayerI = player.tileI;
+  let lastPlayerJ = player.tileJ;
+
+  setInterval(() => {
+    if (lastPlayerI !== player.tileI || lastPlayerJ !== player.tileJ) {
+      updateAllCells(cells, player);
+      lastPlayerI = player.tileI;
+      lastPlayerJ = player.tileJ;
+    }
+  }, 200);
 
   setupMapEventListeners(
     cells,
