@@ -5,7 +5,7 @@ import "./style.css";
 import leaflet from "leaflet";
 import "./_leafletWorkaround.ts";
 import { ButtonMovementController, createMovementButtons } from "./button.ts";
-import { Cell, spawnCells } from "./cell.ts";
+import { Cell, spawnCells, updateAllCells } from "./cell.ts";
 import { clearGameState, loadGameState, saveGameState } from "./gamestate.ts";
 import { GeolocationMovementController } from "./geolocation.ts";
 import {
@@ -63,7 +63,7 @@ function initializeGame(player: Player, initialWorldState: WorldState) {
   if (movementType === "geo") {
     movementController = new GeolocationMovementController();
   } else {
-    const buttonController = new ButtonMovementController();
+    const buttonController = new ButtonMovementController(cells);
     movementController = buttonController;
     createMovementButtons(player, controlPanel, buttonController);
   }
@@ -73,8 +73,8 @@ function initializeGame(player: Player, initialWorldState: WorldState) {
     cells,
     worldState,
     player,
-    () => {
-      player.updateTokenStatus(statusPanel, ENDGAME_TOKEN_VALUE);
+    (message?: string) => {
+      player.updateTokenStatus(statusPanel, ENDGAME_TOKEN_VALUE, message);
       saveGameState(player, worldState);
     },
   );
@@ -87,8 +87,10 @@ function initializeGame(player: Player, initialWorldState: WorldState) {
     cells,
     worldState,
     player,
-    () => player.updateTokenStatus(statusPanel, ENDGAME_TOKEN_VALUE),
+    (message?: string) =>
+      player.updateTokenStatus(statusPanel, ENDGAME_TOKEN_VALUE, message),
   );
+  updateAllCells(cells, player);
 
   map.setView(player.latlng, map.getZoom());
 }

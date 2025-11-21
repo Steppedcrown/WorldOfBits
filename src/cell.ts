@@ -6,7 +6,7 @@ import { Player } from "./player.ts";
 import { WorldState } from "./world.ts";
 
 const SPAWN_PROBABILITY = 0.1;
-const INTERACTION_RANGE = 3;
+const INTERACTION_RANGE = 5;
 
 export class Cell {
   i: number;
@@ -22,7 +22,7 @@ export class Cell {
     token: number | undefined,
     player: Player,
     worldState: WorldState,
-    updateStatus: () => void,
+    updateStatus: (message?: string) => void,
   ) {
     this.i = i;
     this.j = j;
@@ -45,6 +45,7 @@ export class Cell {
         (this.i - player.tileI) ** 2 + (this.j - player.tileJ) ** 2,
       );
       if (distance > INTERACTION_RANGE) {
+        updateStatus("Cell is out of range");
         return;
       }
       const currentCellPoint = new Point(this.i, this.j);
@@ -62,6 +63,8 @@ export class Cell {
         this.setToken(undefined);
         worldState.setCellToken(currentCellPoint, 0);
         updateStatus();
+      } else {
+        updateStatus("Cell is empty");
       }
     });
   }
@@ -85,13 +88,30 @@ export class Cell {
       }).addTo(map);
     }
   }
+
+  updateStyle(player: Player) {
+    const distance = Math.sqrt(
+      (this.i - player.tileI) ** 2 + (this.j - player.tileJ) ** 2,
+    );
+    if (distance <= INTERACTION_RANGE) {
+      this.rectangle.setStyle({ color: "blue" });
+    } else {
+      this.rectangle.setStyle({ color: "red" });
+    }
+  }
+}
+
+export function updateAllCells(cells: Map<string, Cell>, player: Player) {
+  for (const cell of cells.values()) {
+    cell.updateStyle(player);
+  }
 }
 
 export function spawnCells(
   cells: Map<string, Cell>,
   worldState: WorldState,
   player: Player,
-  updateStatus: () => void,
+  updateStatus: (message?: string) => void,
 ) {
   const bounds = map.getBounds();
   const northEast = bounds.getNorthEast();

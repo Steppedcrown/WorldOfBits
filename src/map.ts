@@ -1,6 +1,6 @@
 // @deno-types="npm:@types/leaflet"
 import leaflet from "leaflet";
-import { Cell, spawnCells } from "./cell.ts";
+import { Cell, spawnCells, updateAllCells } from "./cell.ts";
 import { Player } from "./player.ts";
 import { WorldState } from "./world.ts";
 
@@ -52,5 +52,6 @@ export function setupMapEventListeners(
     }
     cells.clear();
     spawnCells(cells, worldState, player, updateStatus);
+    updateAllCells(cells, player);
   });
 }

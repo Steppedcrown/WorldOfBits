@@ -26,7 +26,15 @@ export class Player {
     this.heldToken = value;
   }
 
-  updateTokenStatus(statusPanel: HTMLDivElement, ENDGAME_TOKEN_VALUE: number) {
+  updateTokenStatus(
+    statusPanel: HTMLDivElement,
+    ENDGAME_TOKEN_VALUE: number,
+    message?: string,
+  ) {
+    if (message) {
+      statusPanel.textContent = message;
+      return;
+    }
     if (this.heldToken) {
       statusPanel.textContent = `Holding token: ${this.heldToken}`;
       if (this.heldToken === ENDGAME_TOKEN_VALUE && !this.gameWon) {
